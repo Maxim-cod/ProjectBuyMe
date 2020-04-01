@@ -247,6 +247,7 @@ public class Tests {
              try {
                  String expectedUrl = "https://buyme.co.il/search";
                  maximTests.log(LogStatus.PASS, "the urls are equals ");
+                 System.out.println(expectedUrl);
              }
              catch (AssertionError error){
                  maximTests.log(LogStatus.FAIL,"the urls are equals " + error);
