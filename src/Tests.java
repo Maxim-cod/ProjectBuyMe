@@ -239,8 +239,22 @@ public class Tests {
              maximTests.log(LogStatus.INFO ,"start test ");
              driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
              driver.navigate().to("https://buyme.co.il/search");
+
+             //check if the urls are equals
+             Thread.sleep(1000);
+             String actualUrl= driver.getCurrentUrl();
+             System.out.println(actualUrl);
+             try {
+                 String expectedUrl = "https://buyme.co.il/search";
+                 maximTests.log(LogStatus.PASS, "the urls are equals ");
+             }
+             catch (AssertionError error){
+                 maximTests.log(LogStatus.FAIL,"the urls are equals " + error);
+                 maximTests.log(LogStatus.INFO,"details",maximTests.addScreenCapture(takeScreenShot(imagesPath + "\\" + System.currentTimeMillis())));
+             }
              homeScreen=new HomeScreen(driver);
              //check if the page scrolled to the button of screen
+             Thread.sleep(1000);
              try{
                  homeScreen.scrollToTheButtonOFScreen();
                  maximTests.log(LogStatus.PASS,"catch the element in the button of the gift screen  ");
