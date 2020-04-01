@@ -250,7 +250,7 @@ public class Tests {
                  System.out.println(expectedUrl);
              }
              catch (AssertionError error){
-                 maximTests.log(LogStatus.FAIL,"the urls are equals " + error);
+                 maximTests.log(LogStatus.FAIL,"the urls are not equals " + error);
                  maximTests.log(LogStatus.INFO,"details",maximTests.addScreenCapture(takeScreenShot(imagesPath + "\\" + System.currentTimeMillis())));
              }
              homeScreen=new HomeScreen(driver);
