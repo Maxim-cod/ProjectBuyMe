@@ -71,7 +71,6 @@ public class HomeScreen {
 
      //scroll to the button of the gift screen
       public void scrollToTheButtonOFScreen() throws InterruptedException {
-          findGift.click();
           WebElement buttonDrop=elementInTheButtonOfPage;
           ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", buttonDrop);
           WebDriverWait wait=new WebDriverWait(driver, 5);

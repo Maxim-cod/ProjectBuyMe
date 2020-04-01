@@ -29,7 +29,6 @@ public class Tests {
     //create class object
     HomeScreen homeScreen=new HomeScreen(driver);
     RegestrationScreen regestrationScreen=new RegestrationScreen(driver);
-    Login login=new Login(driver);
     GiftScreen giftScreen=new GiftScreen(driver);
     senderReceiverScreen senderReceiverScreen=new senderReceiverScreen(driver);
     String imagesPath = ("C:\\Users\\MAXIM\\IdeaProjects\\byMe\\ScreenShots");
@@ -46,15 +45,15 @@ public class Tests {
     @BeforeClass
     public static void setUp() throws Exception {
         //path to test logs
-        extent = new ExtentReports("C:\\Users\\MAXIM\\IdeaProjects\\byMe\\testReports\\testReports06.html");
+        extent = new ExtentReports("C:\\Users\\MAXIM\\IdeaProjects\\byMe\\testReports\\testReports01.html");
         //path to report config
         extent.loadConfig(new File("C:\\Users\\MAXIM\\IdeaProjects\\byMe\\reportConfig.xml"));
         String browser = General.readFromFile("websiteURL");
         setBrowther(browser);
 
         //waiting functions
-        driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
-        driver.manage().timeouts().pageLoadTimeout(70,TimeUnit.SECONDS);
+        driver.manage().timeouts().implicitlyWait(20, TimeUnit.SECONDS);
+        driver.manage().timeouts().pageLoadTimeout(60,TimeUnit.SECONDS);
     }
 
     //run once before tests
@@ -73,8 +72,15 @@ public class Tests {
         homeScreen.enterSgnUpScreen();
         String actualUrl=driver.getCurrentUrl();
         regestrationScreen=new RegestrationScreen(driver);
-        regestrationScreen.enterRegister();
-        maximTests.log(LogStatus.PASS,"Create new account to buyMe ");
+        //check if the information in resgestraion screen is correct
+        try {
+            regestrationScreen.enterRegister();
+            maximTests.log(LogStatus.PASS, "Create new account to buyMe ");
+        }
+        catch (Exception error){
+            maximTests.log(LogStatus.FAIL,"login fail " + error);
+            maximTests.log(LogStatus.INFO,"details",maximTests.addScreenCapture(takeScreenShot(imagesPath + "\\" + System.currentTimeMillis())));
+        }
         //checking if urls are equals in regestraion screen
         try{
             String expectedUrl="https://buyme.co.il/?modal=login";
@@ -114,29 +120,43 @@ public class Tests {
     @Test
     public void test03_GiftScreen() throws Exception {
         maximTests = extent.startTest(name.getMethodName());
-        maximTests.log(LogStatus.INFO,"start test ");
-       //check if web page url was changed
+        maximTests.log(LogStatus.INFO, "start test ");
+        //check if web page url was changed
         Thread.sleep(2000);
-        String actualUrl=driver.getCurrentUrl();
+        String actualUrl = driver.getCurrentUrl();
         System.out.println(actualUrl);
-       try {
-           String expectedUrl="https://buyme.co.il/search?budget=2&category=16&region=12";
-           System.out.println(expectedUrl);
-           assertEquals(expectedUrl,actualUrl);
-           maximTests.log(LogStatus.PASS,"The web page url  changed ");
-        }
-       catch (AssertionError urlError){
-            maximTests.log(LogStatus.FAIL,"The web page url does not change " );
-            maximTests.log(LogStatus.INFO,"details",maximTests.addScreenCapture(takeScreenShot(imagesPath + "\\" + System.currentTimeMillis())));
+        try {
+            String expectedUrl = "https://buyme.co.il/search?budget=2&category=16&region=12";
+            System.out.println(expectedUrl);
+            assertEquals(expectedUrl, actualUrl);
+            maximTests.log(LogStatus.PASS, "The web page url  changed ");
+        } catch (AssertionError urlError) {
+            maximTests.log(LogStatus.FAIL, "The web page url does not change ");
+            maximTests.log(LogStatus.INFO, "details", maximTests.addScreenCapture(takeScreenShot(imagesPath + "\\" + System.currentTimeMillis())));
         }
 
-        giftScreen=new GiftScreen(driver);
-        giftScreen.pickBuisness();
-        maximTests.log(LogStatus.PASS,"Pick a buisness ");
-        maximTests.log(LogStatus.PASS,"Pick a Gift ");
-        maximTests.log(LogStatus.INFO,"end of test  " + name.getMethodName());
+        giftScreen = new GiftScreen(driver);
+        //check if the element of pick a buisness is working
+        try {
+            giftScreen.pickBuisness();
+            maximTests.log(LogStatus.PASS, "Pick a buisness ");
+        }
+        catch (Exception error) {
+            maximTests.log(LogStatus.FAIL, "the element is not found " + error);
+            maximTests.log(LogStatus.INFO, "details", maximTests.addScreenCapture(takeScreenShot(imagesPath + "\\" + System.currentTimeMillis())));
+        }
+        //check if the element of pick a gift is working
+        try {
+            maximTests.log(LogStatus.PASS, "Pick a Gift ");
+        }
+        catch (Exception error) {
+            maximTests.log(LogStatus.FAIL, "the elements is not found " + error);
+            maximTests.log(LogStatus.INFO, "details", maximTests.addScreenCapture(takeScreenShot(imagesPath + "\\" + System.currentTimeMillis())));
+        }
 
+        maximTests.log(LogStatus.INFO, "end of test  " + name.getMethodName());
     }
+
     //end of test03
 
     //start of test04
@@ -145,29 +165,27 @@ public class Tests {
         maximTests = extent.startTest(name.getMethodName());
         maximTests.log(LogStatus.INFO,"start test ");
         senderReceiverScreen = new senderReceiverScreen(driver);
-//        //assert the color of step name
-//        WebDriverWait wait = new WebDriverWait(driver,10);
-//        wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("div.step-title.highlighted")));
-//        String textColorActual=driver.findElement(By.cssSelector("div.step-title.highlighted")).getCssValue("Text color");
-//        try{
-//            String expectedColorText="#fab442";
-//            assertEquals(textColorActual,expectedColorText);
-//            maximTests.log(LogStatus.PASS,"The color of stem name found  ");
-//        }
-//        catch (AssertionError error){
-//            maximTests.log(LogStatus.FAIL,"The color of step name is not found " + error);
-//            maximTests.log(LogStatus.INFO,"details",maximTests.addScreenCapture(takeScreenShot(imagesPath + "\\" + System.currentTimeMillis())));
-//        }
-        senderReceiverScreen.senderAndReceiverInformation();
-        maximTests.log(LogStatus.PASS, "Go to page of payment after filling all the information is sender page ");
+        //check if all information in package page complete before continue to payment page
+        try {
+            senderReceiverScreen.senderAndReceiverInformation();
+            maximTests.log(LogStatus.PASS, "Go to page of payment after filling all the information is package page ");
+        }
+        catch (Exception error){
+            maximTests.log(LogStatus.FAIL,"the information in package page is not complete " + error);
+            maximTests.log(LogStatus.INFO, "details", maximTests.addScreenCapture(takeScreenShot(imagesPath + "\\" + System.currentTimeMillis())));
+        }
+
+        //navigate back to home screen
+        Thread.sleep(1000);
         driver.navigate().to("https://buyme.co.il/");
         //exit from your account
         try {
             senderReceiverScreen.exitAccount();
             maximTests.log(LogStatus.PASS, "exit from your account ");
         }
-        catch (Exception error){
-            maximTests.log(LogStatus.FAIL,"fail to exit from your account");
+        catch (Exception errorLogout){
+            maximTests.log(LogStatus.FAIL,"fail to exit from your account " + errorLogout);
+            maximTests.log(LogStatus.INFO,"details",maximTests.addScreenCapture(takeScreenShot(imagesPath + "\\" + System.currentTimeMillis())));
         }
 
         maximTests.log(LogStatus.INFO,"end of test  " + name.getMethodName());
@@ -182,8 +200,15 @@ public class Tests {
             maximTests = extent.startTest(name.getMethodName());
             maximTests.log(LogStatus.INFO ,"start test ");
             homeScreen=new HomeScreen(driver);
-            homeScreen.checkErrorRedTextInLoginScreen();
-            maximTests.log(LogStatus.PASS,"press on button enter to buyMe ");
+            //check if button enterToBuyMe is working
+            try {
+                homeScreen.checkErrorRedTextInLoginScreen();
+                maximTests.log(LogStatus.PASS, "press on button enter to buyMe ");
+            }
+            catch (Exception error){
+                maximTests.log(LogStatus.FAIL,"the element of the button is not found " + error);
+                maximTests.log(LogStatus.INFO,"details",maximTests.addScreenCapture(takeScreenShot(imagesPath + "\\" + System.currentTimeMillis())));
+            }
             //assertErrorMessage in mail text and password text
             String textMail=driver.findElement(By.id("parsley-id-12")).getText();
             String textPassword=driver.findElement(By.id("parsley-id-14")).getText();
@@ -200,6 +225,7 @@ public class Tests {
                 maximTests.log(LogStatus.FAIL,"The message wont show any error text " + error);
                 maximTests.log(LogStatus.INFO,"details",maximTests.addScreenCapture(takeScreenShot(imagesPath + "\\" + System.currentTimeMillis())));
           }
+            //navigate back to home screen
             driver.navigate().to("https://buyme.co.il/");
             maximTests.log(LogStatus.INFO,"end of test " + name.getMethodName());
 
@@ -211,15 +237,17 @@ public class Tests {
          public void test06_scrollToTheButtonOfGiftScreen() throws Exception {
              maximTests = extent.startTest(name.getMethodName());
              maximTests.log(LogStatus.INFO ,"start test ");
+             driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+             driver.navigate().to("https://buyme.co.il/search");
              homeScreen=new HomeScreen(driver);
-
+             //check if the page scrolled to the button of screen
              try{
                  homeScreen.scrollToTheButtonOFScreen();
                  maximTests.log(LogStatus.PASS,"catch the element in the button of the gift screen  ");
                  maximTests.log(LogStatus.INFO,"details",maximTests.addScreenCapture(takeScreenShot(imagesPath + "\\" + System.currentTimeMillis())));
               }
               catch (Exception error){
-                 maximTests.log(LogStatus.FAIL,"not such element detected in the button of the screen " + error);
+                 maximTests.log(LogStatus.FAIL,"the element is not cached " + error);
                  maximTests.log(LogStatus.INFO,"details",maximTests.addScreenCapture(takeScreenShot(imagesPath + "\\" + System.currentTimeMillis())));
               }
 

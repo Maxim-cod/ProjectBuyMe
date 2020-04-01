@@ -50,7 +50,6 @@ public class senderReceiverScreen {
 
     //fill the information in senderAndReceiverPage
     public void senderAndReceiverInformation() throws Exception {
-        Thread.sleep(1000);
         boolean selected_value = radioButtonSomeOneElse.isSelected();
         if (!selected_value) ;
         radioButtonSomeOneElse.click();
@@ -75,6 +74,7 @@ public class senderReceiverScreen {
         insertEmail.sendKeys(General.readFromFile("insertEmail"));
         saveMail.click();
         submit.click();
+
     }
 
       //exit from my account
